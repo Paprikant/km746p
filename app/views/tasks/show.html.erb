@@ -1,0 +1,36 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @task.description %>
+</p>
+
+<p>
+  <strong>Frequency:</strong>
+  <%= @task.frequency %>
+</p>
+
+<p>
+  <strong>Quartals:</strong>
+  <%= @task.quartals %>
+</p>
+
+<p>
+  <strong>Duration min:</strong>
+  <%= @task.duration_min %>
+</p>
+
+<p>
+  <strong>Duration max:</strong>
+  <%= @task.duration_max %>
+</p>
+
+<p>
+  <strong>Categories:</strong>
+  <% @task.categories.each do |c| %>
+    <%= c.name + ", " %>
+  <% end %>
+</p>
+
+<%= link_to 'Edit', edit_task_path(@task) %> |
+<%= link_to 'Back', tasks_path %>
