@@ -1,2 +1,47 @@
-<h1>Day#random</h1>
-<p>Find me in app/views/day/random.html.erb</p>
+<h1>A Random Day</h1>
+
+<p>These are some randomly selected Tasks</p>	
+
+<% @Hours = 0 %>
+<% counter = 0 %>
+<% @Selection = Array.new(0) %>
+<% @Times = Array.new(0) %>
+
+<%# Get Tasks until we have more than 8 hours filled %>
+<% until @Hours >= 8 %>
+  <% @Tasks = GetTask() %>
+  <% @Tasks.each do |task| %>
+    <% time = rand(task.duration_min...task.duration_max+0.5).round(2) %>
+    <% @Hours = @Hours + time %>
+    <% @Selection << task %>
+    <% @Times << time %>
+  <% end %>
+<% end %>
+
+<%# Start table and draw header %>
+<table>
+  <thead>
+    <tr>
+      <th>Zeit</th>
+      <th>Tätigkeit</th>
+    </tr>
+  </thead>
+  <tbody>
+<%# Draw a row for every Task exept the last %>
+    <% @Counter = 0 %>
+    <% while @Counter < @Selection.length-1 %>
+    <tr>
+      <td><%= @Times[@Counter] %> <%= "Stunden" %></td>
+      <% task = @Selection[@Counter] %>
+      <td><%= task.description %></td>   
+    </tr>
+	  <% @Counter = @Counter+1 %>
+    <% end %>
+<%# Draw the last row. Make sure we dont exceed 8 hours %>
+    <tr>
+      <td><%= (@Times[@Counter]-(@Hours-8)).round(2) %> <%= "Stunden" %></td>
+      <% task = @Selection[@Counter] %>
+      <td><%= task.description %></td>   
+    </tr>
+  </tbody>
+</table>
