@@ -2,8 +2,10 @@
 <p>Edit tasks or start generating right away</p>
 
 <%= link_to 'Tasks', tasks_path %>
-<%= link_to 'Categories', categories_path %>
+<%= link_to 'Categories', categories_path  %>
+<%= link_to 'Calendar',  calendar_calendar_path %>
 <br>
 <br>
+<%= GetWeek() %>
 <br>
 <%= link_to image_tag("button_generate.png", height: '125', width: '350'), day_random_path %>

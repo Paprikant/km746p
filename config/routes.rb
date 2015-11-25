@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   get 'day/random'
-
+  get 'calendar/calendar'
   resources :tasks
   resources :categories
   get 'welcome/index'
