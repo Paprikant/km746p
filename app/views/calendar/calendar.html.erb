@@ -1,0 +1,46 @@
+
+
+<script>
+$(document).ready(function() {
+
+    // page is now ready, initialize the calendar...
+    $('#calendar').fullCalendar({
+            
+      dayClick: function() {
+        alert('click');
+      },
+      
+      buttonText: {
+        today:    'today',
+        month:    'month',
+        week:     'week',
+        day:      'day',
+        prev:     'prev',
+        next:     'next' 
+      },
+      
+      header: {
+        left: 'prev next today',
+        center: 'title',
+        right: 'month, basicWeek, basicDay'
+      }
+
+    });
+
+});
+</script>
+
+
+<script>
+function fillDay() {
+  var event={id:1 , title: <%= puts "bla" %>, start:  new Date()};
+  $('#calendar').fullCalendar( 'renderEvent', event, true);
+  $('#calendar').fullCalendar( 'refetchEvents' );
+}
+</script>
+
+
+ <button onclick="fillDay()">Click me</button> 
+ <br>
+
+<div id='calendar'></div>
