@@ -1,13 +1,24 @@
 
+  <div class="field">
+    <% @Categories.each do |c| %>
+      <%= c.name %>
+      <%= check_box_tag('category' + c.id.to_s, c.id, checked=true) %>
+    <% end %>
+  </div>
+
 
 <script>
 $(document).ready(function() {
 
     // page is now ready, initialize the calendar...
     $('#calendar').fullCalendar({
+
+      timeFormat: 'hh:mm',
             
       dayClick: function() {
-        alert('click');
+          var moment = $('#calendar').fullCalendar('getDate');
+          var test = moment.format("DOW");
+          alert(test);
       },
       
       buttonText: {
@@ -31,16 +42,113 @@ $(document).ready(function() {
 </script>
 
 
+<br><br>
+<button onclick="fillMonth()">Fill this Month</button>
+<button onclick="test()"> Test </button>
+<br>
+
+<div id='calendar'></div>
+
+
 <script>
-function fillDay() {
-  var event={id:1 , title: <%= puts "bla" %>, start:  new Date()};
-  $('#calendar').fullCalendar( 'renderEvent', event, true);
-  $('#calendar').fullCalendar( 'refetchEvents' );
+// Useful helper functions for this page
+
+//Days of a month
+function daysInMonth(month,year) {
+    return new Date(year, month, 0).getDate();
+}
+
+//Takes a moment in format 'dd' and returns true if its not saturday or sunday
+function notWeekend(day) {
+  if (day != "Sa" && day != "Su"){
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function getCategories(){
+  var AvaliableCategories = document.querySelectorAll('input[id^="category"]');
+  var checkedCategories = [];
+
+  //Get checked category boxes
+  for (i =0; i < AvaliableCategories.length; i++) {
+    if(AvaliableCategories[i].checked){
+      checkedCategories.push(AvaliableCategories[i].value);
+    }
+  }
+
+  if (checkedCategories.length == 0) {
+    alert("select at least one category");
+    return false;
+  }
+
+  return checkedCategories;
+
+  //alert(document.querySelectorAll('input[id^="category"]'));
 }
 </script>
 
 
- <button onclick="fillDay()">Click me</button> 
- <br>
 
-<div id='calendar'></div>
+<script>
+function fillMonth(){
+  var moment = $('#calendar').fullCalendar('getDate');
+  var categories = getCategories();
+
+  if (categories == false){
+    return false;
+  }
+
+  var month = moment.format("MM");
+  var year = moment.format("YYYY");
+
+  var days_count = daysInMonth(month, year);
+  
+  //Go through every day
+  for (var i = 1; i <= days_count; i++) {
+
+    //Leading 0 for days < 10
+    if ( i < 10 ) {
+      var day = "0" + i;
+    }
+    else {
+      var day = i;
+    }
+
+    //Start of the day
+    var timepointer = $.fullCalendar.moment(year + '-' + month +'-'+ day + 'T08:00:00');
+
+    //Only do work for workdays
+    if (notWeekend(timepointer.format("dd"))) {
+
+      //Get a random selection
+      var response = $.ajax({
+        type: 'GET',
+        url: "/day/show",
+        data: {categories: categories},
+        async: false});
+  
+      var list = JSON.parse(response.responseText);
+    
+      //Go through every task of this day
+      list.forEach(function(entry){
+
+        //Make event from time and task description
+        var task = Object.keys(entry)[0];
+        var time = entry[Object.keys(entry)[0]];
+        var event={id:1 , title: task, start:  timepointer };
+        
+        //Add task to calendar
+        $('#calendar').fullCalendar( 'renderEvent', event, true);
+        timepointer.add(time, 'hours');
+
+      })
+    }
+  }
+
+}
+</script>
+
+
+ 

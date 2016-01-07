@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   resources :categories
   get 'welcome/index'
 
+  get 'day/show', to: 'day#show', defaults: { format: 'json' }
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
